@@ -136,5 +136,6 @@ RUN echo "----------------------------------------------------------------"
 RUN echo "✨ IMAGE DOCKER CONSTRUITE AVEC SUCCÈS"
 RUN echo "----------------------------------------------------------------"
 
+RUN mkdir -p /app/var/log/supervisor
 # Commande de démarrage
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
