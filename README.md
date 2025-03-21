@@ -15,6 +15,8 @@ Bienvenue dans le projet de construction d'images Docker pour une application Sy
 
 Ce script Bash vous permet de construire une image Docker pour une application Symfony avec des modules PHP personnalisés. Vous pouvez spécifier l'environnement (`dev` ou `prod`), sélectionner les extensions PHP à inclure, et ajouter des extensions supplémentaires comme **LaTeX** ou **Chromium**.
 
+Une fois créé il ne vous reste plus qu'à la mettre dans votre docker-compose à image: nom de l'image.
+
 ### Fonctionnalités
 
 - 🛠️ **Choisir l'environnement** : Développer pour `dev` ou déployer en `prod`.
@@ -29,7 +31,7 @@ Assurez-vous que vous avez installé Docker sur votre machine avant de continuer
 1. Clonez ce dépôt :
 
    ```bash
-   git clone https://github.com/mon-utilisateur/mon-projet-docker-symfony.git
+   git clone 
    cd mon-projet-docker-symfony
 
     Assurez-vous que Docker est en cours d'exécution :
