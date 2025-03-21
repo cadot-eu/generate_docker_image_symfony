@@ -115,8 +115,7 @@ docker build $progress_option $NO_CACHE \
 --build-arg ENABLED_EXTENSIONS="$enabled_extensions" \
 --build-arg AUTRES_EXTENSIONS="$autres_extensions" \
 --build-arg MODE="$env_mode" \
--t "$image_name" . || error_exit "Échec de la construction de l'image Docker"
-
+-t "$image_name" .
 
 # Afficher le nom de l'image créée
 echo "Image Docker créée : $image_name"

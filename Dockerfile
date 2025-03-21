@@ -31,6 +31,9 @@ ENV MODE=$MODE \
 # Copie de l'installateur d'extensions depuis le builder
 COPY --from=builder /usr/local/bin/install-php-extensions /usr/local/bin/
 
+# Copie des fichiers de configuration
+COPY ./BuildConfig /tmp/BuildConfig
+
 # Installation de toutes les extensions dans l'image finale
 RUN echo "----------------------------------------------------------------" && \
     echo "🔧 INSTALLATION DES EXTENSIONS PHP" && \
@@ -57,7 +60,10 @@ RUN echo "----------------------------------------------------------------" && \
     if [ "$MODE" = "dev" ]; then \
         echo "⏳ Mode DEV détecté - Installation de Xdebug..." && \
         install-php-extensions xdebug && \
-        echo "✅ Xdebug installé avec succès"; \
+        # Copie du fichier de configuration Xdebug
+        echo "⏳ Copie du fichier de configuration Xdebug..." && \
+        cat "/tmp/BuildConfig/xdebug.ini" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+        echo "✅ Configuration Xdebug installée"; \
     else \
         echo "ℹ️ Mode PROD détecté - Xdebug non installé"; \
     fi && \
@@ -105,16 +111,17 @@ COPY ./BuildConfig/nginx.conf /etc/nginx/http.d/default.conf
 COPY ./BuildConfig/php.ini /usr/local/etc/php/php.ini
 COPY ./BuildConfig/supervisord.conf /etc/supervisord.conf
 
-# Configuration conditionnelle de PHP
 COPY ./BuildConfig /tmp/BuildConfig
+# Configuration conditionnelle de PHP
 RUN echo "⏳ Application de la configuration PHP pour le mode $MODE..." && \
     if [ -f "/tmp/BuildConfig/php_${MODE}.ini" ]; then \
         cat "/tmp/BuildConfig/php_${MODE}.ini" >> /usr/local/etc/php/php.ini && \
         echo "✅ Configuration PHP du mode $MODE appliquée"; \
     else \
         echo "ℹ️ Aucun fichier de configuration spécifique trouvé pour le mode $MODE"; \
-    fi && \
-    rm -rf /tmp/BuildConfig
+    fi 
+    # && \
+    #rm -rf /tmp/BuildConfig
 
 # Message avant la copie du code
 RUN echo "----------------------------------------------------------------"
@@ -123,7 +130,6 @@ RUN echo "----------------------------------------------------------------"
 
 # Répertoire de travail et copie du code
 WORKDIR /app
-COPY . .
 
 # Message final
 RUN echo "----------------------------------------------------------------"
