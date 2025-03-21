@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# Vérifier et créer les dossiers de logs pour Supervisor
+mkdir -p /app/var/log/supervisor /var/run/supervisor
+chmod -R 777 /app/var/log/supervisor /var/run/supervisor
+
 # Exécuter les commandes pour installer/mettre à jour Symfony si nécessaire
 if [ "${1#-}" != "$1" ]; then
     set -- php-fpm "$@"
