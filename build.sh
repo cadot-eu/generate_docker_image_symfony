@@ -14,14 +14,17 @@ NO_CACHE="--no-cache"
 env_mode="prod" # Valeur par défaut pour le mode
 verbose=false
 
-# Vérifier si l'option -v (verbose) est passée en argument
-while getopts "v" opt; do
+# Vérifier si l'option -v ou -s est activée
+while getopts "vs" opt; do
     case $opt in
         v)
             verbose=true
         ;;
+        s)
+            NO_CACHE=""
+        ;;
         *)
-            echo "Usage: $0 [-v]"
+            echo "Usage: $0 [-v] [-s]"
             exit 1
         ;;
     esac
@@ -102,7 +105,7 @@ echo "Extensions PHP activées: ${enabled_extensions:-Aucune}"
 echo "Autres extensions activées: ${autres_extensions:-Aucune}"
 
 # Commande de construction Docker avec les 3 arguments
-echo "Build lancé avec ENABLED_EXTENSIONS=\"$enabled_extensions\", AUTRES_EXTENSIONS=\"$autres_extensions\", MODE=\"$env_mode\" et nom de l'image \"$image_name\""
+echo "Build lancé avec ENABLED_EXTENSIONS=\"$enabled_extensions\", AUTRES_EXTENSIONS=\"$autres_extensions\", MODE=\"$env_mode\" , nom de l'image \"$image_name\" et USER_ID=$USER et GROUP_ID=$USER"
 
 # Définir l'option --progress=plain si l'option -v est activée
 progress_option=""
@@ -115,7 +118,10 @@ docker build $progress_option $NO_CACHE \
 --build-arg ENABLED_EXTENSIONS="$enabled_extensions" \
 --build-arg AUTRES_EXTENSIONS="$autres_extensions" \
 --build-arg MODE="$env_mode" \
+--build-arg USER_ID=$(id -u) \
+--build-arg GROUP_ID=$(id -g) \
 -t "$image_name" .
+
 
 # Afficher le nom de l'image créée
 echo "Image Docker créée : $image_name"

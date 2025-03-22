@@ -130,12 +130,27 @@ RUN echo "----------------------------------------------------------------"
 
 # Répertoire de travail et copie du code
 WORKDIR /app
+RUN mkdir -p /var/log/supervisor
 
 # Message final
 RUN echo "----------------------------------------------------------------"
 RUN echo "✨ IMAGE DOCKER CONSTRUITE AVEC SUCCÈS"
 RUN echo "----------------------------------------------------------------"
 
-RUN mkdir -p /app/var/log/supervisor
-# Commande de démarrage
+# Répertoire de travail et copie du code
+WORKDIR /app
+
+# Copier le script d'entrypoint dans l'image Docker
+COPY BuildConfig/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+# Rendre le script exécutable
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Définir le script comme point d'entrée du conteneur
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Créer le répertoire pour les logs de supervisord
+RUN mkdir -p /var/log/supervisor
+
+# Définir supervisord comme processus principal à lancer
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

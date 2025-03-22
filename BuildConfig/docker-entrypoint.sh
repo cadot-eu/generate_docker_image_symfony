@@ -1,26 +1,40 @@
 #!/bin/sh
 set -e
 
-# Vérifier et créer les dossiers de logs pour Supervisor
-mkdir -p /app/var/log/supervisor /var/run/supervisor
-chmod -R 777 /app/var/log/supervisor /var/run/supervisor
+echo "Entrée dans docker-entrypoint.sh"
 
-# Exécuter les commandes pour installer/mettre à jour Symfony si nécessaire
+
 if [ "${1#-}" != "$1" ]; then
     set -- php-fpm "$@"
 fi
 
-if [ "$1" = 'php-fpm' ] || [ "$1" = 'bin/console' ]; then
-    # Installer les dépendances si nécessaire
-    if [ ! -d vendor ]; then
-        composer install --prefer-dist --no-progress --no-interaction
-    fi
-    
-    # Mettre à jour la base de données si nécessaire
-    php bin/console doctrine:migrations:migrate --no-interaction || true
-    
-    # Vider le cache
-    php bin/console cache:clear || true
+echo "Argument passé : $1"
+
+#if [ "$1" = 'php-fpm' ] || [ "$1" = 'bin/console' ]; then
+echo "Démarrage du service $1"
+
+if [ ! -d vendor ]; then
+    echo "Installation des dépendances via Composer..."
+    composer install --prefer-dist --no-progress --no-interaction
 fi
 
-exec "$@"
+echo "Vider et réchauffer le cache..."
+php bin/console cache:clear --no-warmup || true
+php bin/console cache:warmup || true
+
+chown -R www-data:www-data /app/var
+
+php bin/console asset-map:compile --no-interaction || true
+
+
+php bin/console cache:clear || true
+#fi
+
+alias sc="php bin/console"
+cat > /bin/sc <<'EOF'
+#!/bin/sh
+php bin/console "$@"
+EOF
+chmod +x /bin/sc
+# Lancer supervisord (assure-toi que supervisord est configuré)
+exec /usr/bin/supervisord -c /etc/supervisord.conf
