@@ -62,7 +62,7 @@ RUN echo "----------------------------------------------------------------" && \
         install-php-extensions xdebug && \
         # Copie du fichier de configuration Xdebug
         echo "⏳ Copie du fichier de configuration Xdebug..." && \
-        cat "/tmp/BuildConfig/xdebug.ini" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+        #cat "/tmp/BuildConfig/xdebug.ini" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
         echo "✅ Configuration Xdebug installée"; \
     else \
         echo "ℹ️ Mode PROD détecté - Xdebug non installé"; \
