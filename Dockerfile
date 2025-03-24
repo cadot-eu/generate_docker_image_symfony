@@ -70,7 +70,7 @@ RUN echo "----------------------------------------------------------------" && \
     \
     # Installation des dépendances système
     echo "⏳ Installation des dépendances système..." && \
-    apk add --no-cache nginx supervisor && \
+    apk add --no-cache nginx supervisor git && \
     echo "✅ Dépendances système installées" && \
     \
     # Installation conditionnelle de Chromium
