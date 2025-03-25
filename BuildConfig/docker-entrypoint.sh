@@ -52,9 +52,6 @@ else
     log_warn "Commande asset-map:compile non disponible - ignorée 🤷‍♂️"
 fi
 
-log_warn "Configuration des permissions... 🔒"
-chown -R www-data:www-data var
-
 log_warn "Création du raccourci sc... 📋"
 cat > /usr/local/bin/sc <<'EOF'
 #!/bin/sh
