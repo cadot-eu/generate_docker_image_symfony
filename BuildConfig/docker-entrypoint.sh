@@ -1,7 +1,15 @@
 #!/bin/sh
 set -e
-
-
+#définition de log_success, log_error ..
+log_success() {
+    echo -e "\033[0;32m\033[1m ${1:-Success}\033[0m \033[1;32m"
+}
+log_error() {
+    echo -e "\033[1;31m $(echo $1 | sed 's/.*/ & /')\033[0m"
+}
+log_warn() {
+    echo -e "\033[1;33m $(echo $1 | sed 's/.*/ & /')\033[0m"
+}
 # Démarrer le script
 echo "Démarrage du script docker-entrypoint.sh"
 
@@ -11,12 +19,7 @@ if [ ! -f bin/console ]; then
     exit 1
 fi
 
-# Gestion des arguments
-if [ "${1#-}" != "$1" ]; then
-    set -- php-fpm "$@"
-fi
 
-echo "Commande passée: $@"
 
 # Installation des dépendances si nécessaire
 if [ ! -d vendor ]; then
@@ -28,6 +31,16 @@ if [ ! -d vendor ]; then
         exit 1
     fi
 fi
+
+# update de la base de données
+log_warn "Mise à jour de la base de données..."
+{
+    php bin/console doctrine:shema:update --force --no-interaction
+    } || {
+    log_error "Erreur durant la mise à jour de la base de données"
+    exit 1
+    }
+}
 
 # Gestion du cache Symfony
 log_warn "Gestion du cache Symfony..."
@@ -62,19 +75,6 @@ php /app/bin/console "$@"
 EOF
 chmod +x /usr/local/bin/sc
 
-# Gestion de supervisord
-if [ -x "$(command -v supervisord)" ]; then
-    echo "Démarrage de supervisord..."
-    if [ -f /etc/supervisord.conf ]; then
-        # Démarrer supervisord sans prendre le contrôle du processus principal
-        /usr/bin/supervisord -c /etc/supervisord.conf &
-    else
-        log_error "Fichier de configuration supervisord.conf introuvable"
-    fi
-else
-    log_warn "supervisord n'est pas installé - ignoré"
-fi
 
-# Exécuter la commande principale
-log_success "Exécution de la commande principale: $@"
-exec "$@"
+
+
