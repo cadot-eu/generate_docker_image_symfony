@@ -32,14 +32,11 @@ if [ ! -d vendor ]; then
     fi
 fi
 
-# update de la base de données
+# Mise à jour de la base de données
 log_warn "Mise à jour de la base de données..."
-{
-    php bin/console doctrine:shema:update --force --no-interaction
-    } || {
+php bin/console doctrine:schema:update --no-interaction || {
     log_error "Erreur durant la mise à jour de la base de données"
     exit 1
-    }
 }
 
 # Gestion du cache Symfony
