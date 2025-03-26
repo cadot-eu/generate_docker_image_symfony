@@ -57,19 +57,22 @@ php bin/console doctrine:schema:update --no-interaction || {
 
 # Gestion du cache Symfony
 log_warn "Gestion du cache Symfony..."
-{
+if [ "$MODE" = "dev" ]; then
+    php bin/console cache:clear || {
+        log_error "Erreur durant la suppression du cache"
+    }
+else
     php bin/console cache:clear --no-warmup && \
-    php bin/console cache:warmup
-    } || {
-    log_error "Erreur durant la gestion du cache"
-    
-}
+    php bin/console cache:warmup || {
+        log_error "Erreur durant la mise en cache"
+    }
+fi
 
 
 # Compilation des assets si la commande existe
 
+log_warn "Compilation des assets..."
 if [ "$MODE" = "prod" ]; then
-    log_warn "Compilation des assets..."
     if php bin/console | grep -q asset-map:compile; then
         php bin/console asset-map:compile --no-interaction || {
             log_error "Erreur durant asset-map:compile"
@@ -78,10 +81,16 @@ if [ "$MODE" = "prod" ]; then
     else
         log_warn "Commande asset-map:compile non disponible - ignorée"
     fi
-else
-    log_warn "Nttoyage cache en mode dev"
-    php bin/console cache:clear
 fi
+
+#installion de php flasher
+log_warn "Installation de php flasher..."
+if [ ! -f public/vendor/flasher ]; then
+    log_warn "Installation de php flasher..."
+    php bin/console flasher:install
+fi
+
+
 
 
 # Création du raccourci sc pour Symfony Console
