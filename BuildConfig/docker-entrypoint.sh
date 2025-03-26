@@ -65,15 +65,22 @@ log_warn "Gestion du cache Symfony..."
     
 }
 
+
 # Compilation des assets si la commande existe
-log_warn "Compilation des assets..."
-if php bin/console | grep -q asset-map:compile; then
-    php bin/console asset-map:compile --no-interaction || {
-        log_error "Erreur durant asset-map:compile"
-        
-    }
+
+if [ "$MODE" = "prod" ]; then
+    log_warn "Compilation des assets..."
+    if php bin/console | grep -q asset-map:compile; then
+        php bin/console asset-map:compile --no-interaction || {
+            log_error "Erreur durant asset-map:compile"
+            
+        }
+    else
+        log_warn "Commande asset-map:compile non disponible - ignorée"
+    fi
 else
-    log_warn "Commande asset-map:compile non disponible - ignorée"
+    log_warn "Nttoyage cache en mode dev"
+    php bin/console cache:clear
 fi
 
 
