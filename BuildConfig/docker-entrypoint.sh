@@ -26,7 +26,8 @@ if [ ! -d var ]; then
     log_warn "Création du répertoire var..."
     mkdir var
     mkdir var/log
-    chmod -R 775 var/
+    chmod -R 775 var
+    chown -R www-data:www-data var
 fi
 
 
