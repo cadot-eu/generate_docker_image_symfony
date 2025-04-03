@@ -55,19 +55,6 @@ RUN echo "----------------------------------------------------------------" && \
     else \
         echo "ℹ️ Aucune extension personnalisée à installer"; \
     fi && \
-    \
-    # Installation conditionnelle de Xdebug
-    if [ "$MODE" = "dev" ]; then \
-        echo "⏳ Mode DEV détecté - Installation de Xdebug..." && \
-        install-php-extensions xdebug && \
-        # Copie du fichier de configuration Xdebug
-        echo "⏳ Copie du fichier de configuration Xdebug..." && \
-        #cat "/tmp/BuildConfig/xdebug.ini" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-        echo "✅ Configuration Xdebug installée"; \
-    else \
-        echo "ℹ️ Mode PROD détecté - Xdebug non installé"; \
-    fi && \
-    \
     # Installation des dépendances système
     echo "⏳ Installation des dépendances système..." && \
     apk add --no-cache nginx supervisor git && \

@@ -26,10 +26,10 @@ if [ ! -d var ]; then
     log_warn "Création du répertoire var..."
     mkdir var
     mkdir var/log
-    chmod -R 775 var
-    chown -R www-data:www-data var
 fi
 
+chmod -R 775 var
+chown -R www-data:www-data var
 
 
 # Installation des dépendances si nécessaire
@@ -78,7 +78,6 @@ log_warn "Compilation des assets..."
 if php bin/console | grep -q asset-map:compile; then
     php bin/console asset-map:compile --no-interaction || {
         log_error "Erreur durant asset-map:compile"
-        
     }
 else
     log_warn "Commande asset-map:compile non disponible - ignorée"
@@ -94,6 +93,8 @@ fi
 #permission www-data sur public
 log_warn "Permission www-data sur public..."
 chown -R www-data:www-data public
+
+
 
 
 # Création du raccourci sc pour Symfony Console
