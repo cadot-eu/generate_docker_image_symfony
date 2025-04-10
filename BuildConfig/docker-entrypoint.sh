@@ -105,6 +105,14 @@ php /app/bin/console "$@"
 EOF
 chmod +x /usr/local/bin/sc
 
+# Création du raccourci translationUpdateFr
+log_warn "Création du raccourci translationUpdateFr..."
+cat > /usr/local/bin/translationUpdateFr <<'EOF'
+#!/bin/sh
+php bin/console translation:extract --force --no-fill fr --format=yaml
+EOF
+chmod +x /usr/local/bin/translationUpdateFr
+
 
 log_warn "Démarrage de Supervisord..."
 exec "$@"
