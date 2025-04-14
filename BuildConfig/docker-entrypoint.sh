@@ -93,6 +93,7 @@ fi
 #permission www-data sur public
 log_warn "Permission www-data sur public..."
 chown -R www-data:www-data public
+chmod 777 var -R
 
 
 
