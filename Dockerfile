@@ -139,12 +139,13 @@ RUN mkdir -p /app/public \
     && chown -R www-data:www-data /app
 
 # Créer le fichier de préchargement
-RUN touch /app/config/preload.php
-COPY ./config/preload.php /app/config/preload.php
-RUN chown www-data:www-data /app/config/preload.php
+RUN if [ "$APP_ENV" = "prod" ]; then \
+    touch /app/config/preload.php && \
+    chown www-data:www-data /app/config/preload.php; \
+    fi
+COPY preload.php /app/config/preload.php
 
-# Copie des fichiers de configuration de l'application
-COPY ./config /app/config
+
 
 
 
