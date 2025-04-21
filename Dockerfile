@@ -9,6 +9,9 @@ RUN echo "----------------------------------------------------------------"
 # Installation de l'installateur d'extensions
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
+# Stage wkhtmltopdf
+FROM surnet/alpine-wkhtmltopdf:3.20.2-0.12.6-full AS wkhtmltopdf
+
 # Stage final
 FROM php:8.2-fpm-alpine
 
@@ -34,6 +37,19 @@ COPY --from=builder /usr/local/bin/install-php-extensions /usr/local/bin/
 # Copie des fichiers de configuration
 COPY ./BuildConfig /tmp/BuildConfig
 
+# Installation des dépendances minimales pour wkhtmltopdf
+RUN apk add --no-cache \
+    libstdc++ \
+    libx11 \
+    libxrender \
+    libxext \
+    fontconfig \
+    freetype
+
+# Copie des binaires wkhtmltopdf depuis l'image surnet
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /lib/libwkhtmltox* /lib/
+
 # Installation de toutes les extensions dans l'image finale
 RUN echo "----------------------------------------------------------------" && \
     echo "🔧 INSTALLATION DES EXTENSIONS PHP" && \
@@ -49,11 +65,11 @@ RUN echo "----------------------------------------------------------------" && \
     \
     # Installation des extensions spécifiées si présentes
     if [ -n "$ENABLED_EXTENSIONS" ]; then \
-        echo "⏳ Installation des extensions personnalisées: $ENABLED_EXTENSIONS" && \
-        install-php-extensions $(echo $ENABLED_EXTENSIONS | tr ',' ' ') && \
-        echo "✅ Extensions personnalisées installées avec succès"; \
+    echo "⏳ Installation des extensions personnalisées: $ENABLED_EXTENSIONS" && \
+    install-php-extensions $(echo $ENABLED_EXTENSIONS | tr ',' ' ') && \
+    echo "✅ Extensions personnalisées installées avec succès"; \
     else \
-        echo "ℹ️ Aucune extension personnalisée à installer"; \
+    echo "ℹ️ Aucune extension personnalisée à installer"; \
     fi && \
     # Installation des dépendances système
     echo "⏳ Installation des dépendances système..." && \
@@ -62,16 +78,16 @@ RUN echo "----------------------------------------------------------------" && \
     \
     # Installation conditionnelle de Chromium
     if echo "$AUTRES_EXTENSIONS" | grep -q "\bchromium\b"; then \
-        echo "⏳ Installation de Chromium..." && \
-        apk add --no-cache chromium && \
-        echo "✅ Chromium installé avec succès"; \
+    echo "⏳ Installation de Chromium..." && \
+    apk add --no-cache chromium && \
+    echo "✅ Chromium installé avec succès"; \
     fi && \
     \
     # Installation conditionnelle de LaTeX
     if echo "$AUTRES_EXTENSIONS" | grep -q "\blatex\b"; then \
-        echo "⏳ Installation de LaTeX..." && \
-        apk add --no-cache texlive && \
-        echo "✅ LaTeX installé avec succès"; \
+    echo "⏳ Installation de LaTeX..." && \
+    apk add --no-cache texlive && \
+    echo "✅ LaTeX installé avec succès"; \
     fi && \
     \
     # Création des répertoires nécessaires
@@ -102,13 +118,11 @@ COPY ./BuildConfig /tmp/BuildConfig
 # Configuration conditionnelle de PHP
 RUN echo "⏳ Application de la configuration PHP pour le mode $MODE..." && \
     if [ -f "/tmp/BuildConfig/php_${MODE}.ini" ]; then \
-        cat "/tmp/BuildConfig/php_${MODE}.ini" >> /usr/local/etc/php/php.ini && \
-        echo "✅ Configuration PHP du mode $MODE appliquée"; \
+    cat "/tmp/BuildConfig/php_${MODE}.ini" >> /usr/local/etc/php/php.ini && \
+    echo "✅ Configuration PHP du mode $MODE appliquée"; \
     else \
-        echo "ℹ️ Aucun fichier de configuration spécifique trouvé pour le mode $MODE"; \
-    fi 
-    # && \
-    #rm -rf /tmp/BuildConfig
+    echo "ℹ️ Aucun fichier de configuration spécifique trouvé pour le mode $MODE"; \
+    fi
 
 # Message avant la copie du code
 RUN echo "----------------------------------------------------------------"
@@ -123,9 +137,6 @@ RUN mkdir -p /var/log/supervisor
 RUN echo "----------------------------------------------------------------"
 RUN echo "✨ IMAGE DOCKER CONSTRUITE AVEC SUCCÈS"
 RUN echo "----------------------------------------------------------------"
-
-# Répertoire de travail et copie du code
-WORKDIR /app
 
 # Copier le script d'entrypoint dans l'image Docker
 COPY BuildConfig/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
