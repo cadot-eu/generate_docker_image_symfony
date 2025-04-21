@@ -133,6 +133,21 @@ RUN echo "----------------------------------------------------------------"
 WORKDIR /app
 RUN mkdir -p /var/log/supervisor
 
+# Création des répertoires nécessaires
+RUN mkdir -p /app/public \
+    && mkdir -p /app/config \
+    && chown -R www-data:www-data /app
+
+# Créer le fichier de préchargement
+RUN touch /app/config/preload.php
+COPY ./config/preload.php /app/config/preload.php
+RUN chown www-data:www-data /app/config/preload.php
+
+# Copie des fichiers de configuration de l'application
+COPY ./config /app/config
+
+
+
 # Message final
 RUN echo "----------------------------------------------------------------"
 RUN echo "✨ IMAGE DOCKER CONSTRUITE AVEC SUCCÈS"
