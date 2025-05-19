@@ -2,9 +2,9 @@
 FROM php:8.2-fpm-alpine AS builder
 
 # Message de démarrage
-RUN echo "----------------------------------------------------------------"
-RUN echo "🚀 ÉTAPE 1: PRÉPARATION DE L'ENVIRONNEMENT DE BUILD"
-RUN echo "----------------------------------------------------------------"
+RUN echo "----------------------------------------------------------------" && \
+    echo "🚀 ÉTAPE 1: PRÉPARATION DE L'ENVIRONNEMENT DE BUILD" && \
+    echo "----------------------------------------------------------------"
 
 # Installation de l'installateur d'extensions
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -21,9 +21,9 @@ ARG AUTRES_EXTENSIONS=""
 ARG MODE="prod"
 
 # Message de démarrage du stage final
-RUN echo "----------------------------------------------------------------"
-RUN echo "🚀 ÉTAPE 2: CONSTRUCTION DE L'IMAGE FINALE"
-RUN echo "----------------------------------------------------------------"
+RUN echo "----------------------------------------------------------------" && \
+    echo "🚀 ÉTAPE 2: CONSTRUCTION DE L'IMAGE FINALE" && \
+    echo "----------------------------------------------------------------"
 
 # Définir MODE comme variable d'environnement
 ENV MODE=$MODE \
@@ -71,10 +71,6 @@ RUN echo "----------------------------------------------------------------" && \
     else \
     echo "ℹ️ Aucune extension personnalisée à installer"; \
     fi && \
-    # Installation des dépendances système
-    echo "⏳ Installation des dépendances système..." && \
-    apk add --no-cache nginx supervisor git && \
-    echo "✅ Dépendances système installées" && \
     \
     # Installation conditionnelle de Chromium
     if echo "$AUTRES_EXTENSIONS" | grep -q "\bchromium\b"; then \
@@ -89,6 +85,11 @@ RUN echo "----------------------------------------------------------------" && \
     apk add --no-cache texlive && \
     echo "✅ LaTeX installé avec succès"; \
     fi && \
+    \
+    # Installation des dépendances système
+    echo "⏳ Installation des dépendances système..." && \
+    apk add --no-cache nginx supervisor git && \
+    echo "✅ Dépendances système installées" && \
     \
     # Création des répertoires nécessaires
     echo "⏳ Création des répertoires..." && \
@@ -105,9 +106,9 @@ RUN echo "----------------------------------------------------------------" && \
     echo "✅ Nettoyage terminé"
 
 # Message avant la copie des fichiers de configuration
-RUN echo "----------------------------------------------------------------"
-RUN echo "📁 COPIE DES FICHIERS DE CONFIGURATION"
-RUN echo "----------------------------------------------------------------"
+RUN echo "----------------------------------------------------------------" && \
+    echo "📁 COPIE DES FICHIERS DE CONFIGURATION" && \
+    echo "----------------------------------------------------------------"
 
 # Copie des fichiers de configuration
 COPY ./BuildConfig/nginx.conf /etc/nginx/http.d/default.conf
@@ -125,18 +126,18 @@ RUN echo "⏳ Application de la configuration PHP pour le mode $MODE..." && \
     fi
 
 # Message avant la copie du code
-RUN echo "----------------------------------------------------------------"
-RUN echo "📦 COPIE DU CODE SOURCE"
-RUN echo "----------------------------------------------------------------"
+RUN echo "----------------------------------------------------------------" && \
+    echo "📦 COPIE DU CODE SOURCE" && \
+    echo "----------------------------------------------------------------"
 
 # Répertoire de travail et copie du code
 WORKDIR /app
-RUN mkdir -p /var/log/supervisor
+COPY . /app
 
 # Message final
-RUN echo "----------------------------------------------------------------"
-RUN echo "✨ IMAGE DOCKER CONSTRUITE AVEC SUCCÈS"
-RUN echo "----------------------------------------------------------------"
+RUN echo "----------------------------------------------------------------" && \
+    echo "✨ IMAGE DOCKER CONSTRUITE AVEC SUCCÈS" && \
+    echo "----------------------------------------------------------------"
 
 # Copier le script d'entrypoint dans l'image Docker
 COPY BuildConfig/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
