@@ -114,9 +114,9 @@ fi
 
 # Si les autres extensions ne sont pas déjà définies, demander la sélection
 if [[ -z "${autres_extensions:-}" ]]; then
-    # Demander les extensions supplémentaires (comme LaTeX et Chromium)
-    echo "Sélectionnez les extensions supplémentaires (latex, chromium) à installer (entrez les noms séparés par des virgules, ou appuyez sur 'Entrée' pour ignorer) :"
-    read -p "Autres extensions (par ex: latex,chromium) : " autres_extensions
+    # Demander les extensions supplémentaires (comme LaTeX,socket et Chromium)
+    echo "Sélectionnez les extensions supplémentaires (latex,socket chromium) à installer (entrez les noms séparés par des virgules, ou appuyez sur 'Entrée' pour ignorer) :"
+    read -p "Autres extensions (par ex: latex,socket,chromium) : " autres_extensions
 fi
 
 # Créer le nom de l'image

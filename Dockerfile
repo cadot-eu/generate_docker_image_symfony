@@ -86,6 +86,13 @@ RUN echo "----------------------------------------------------------------" && \
     echo "✅ LaTeX installé avec succès"; \
     fi && \
     \
+    # Installation conditionnelle de socket
+    if echo "$AUTRES_EXTENSIONS" | grep -q "\bsocket\b"; then \
+    echo "⏳ Installation de socket..." && \
+    apk add --no-cache php8.2-sockets && \
+    echo "✅ Socket installé avec succès"; \
+    fi && \
+    \
     # Installation des dépendances système
     echo "⏳ Installation des dépendances système..." && \
     apk add --no-cache nginx supervisor git && \
