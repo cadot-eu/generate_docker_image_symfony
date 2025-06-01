@@ -89,7 +89,7 @@ RUN echo "----------------------------------------------------------------" && \
     # Installation conditionnelle de socket
     if echo "$AUTRES_EXTENSIONS" | grep -q "\bsocket\b"; then \
     echo "⏳ Installation de socket..." && \
-    apk add --no-cache php8.2-sockets && \
+    install-php-extensions sockets && \
     echo "✅ Socket installé avec succès"; \
     fi && \
     \
@@ -111,6 +111,8 @@ RUN echo "----------------------------------------------------------------" && \
     echo "🧹 Nettoyage des fichiers temporaires..." && \
     rm -rf /tmp/* /var/cache/apk/* && \
     echo "✅ Nettoyage terminé"
+
+
 
 # Message avant la copie des fichiers de configuration
 RUN echo "----------------------------------------------------------------" && \
