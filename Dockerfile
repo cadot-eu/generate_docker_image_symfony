@@ -86,11 +86,12 @@ RUN echo "----------------------------------------------------------------" && \
     echo "✅ LaTeX installé avec succès"; \
     fi && \
     \
-    # Installation conditionnelle de socket
-    if echo "$AUTRES_EXTENSIONS" | grep -q "\bsocket\b"; then \
-    echo "⏳ Installation de socket..." && \
-    install-php-extensions sockets && \
-    echo "✅ Socket installé avec succès"; \
+    # Installation conditionnelle de Python et pip
+    if echo "$AUTRES_EXTENSIONS" | grep -q "\bpython\b"; then \
+    echo "⏳ Installation de Python et pip..." && \
+    apk add --no-cache python3 py3-pip && \
+    ln -sf python3 /usr/bin/python && \
+    echo "✅ Python et pip installé avec succès"; \
     fi && \
     \
     # Installation des dépendances système

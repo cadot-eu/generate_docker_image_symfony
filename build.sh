@@ -87,7 +87,7 @@ if [[ -z "${env_mode:-}" ]]; then
 fi
 
 # Liste des extensions PHP
-options=("amqp" "gd" "geoip" "gmagick" "gnupg" "imagick" "mongodb" "mysqli" "pdo_mysql" "pdo_pgsql" "redis" "snappy" "tidy" "uploadprogress" "yaml")
+options=("amqp" "gd" "geoip" "gmagick" "gnupg" "imagick" "mongodb" "mysqli" "pdo_mysql" "pdo_pgsql" "redis" "sockets" "snappy" "tidy" "uploadprogress" "yaml")
 
 # Si les extensions ne sont pas déjà définies, demander la sélection
 if [[ -z "${enabled_extensions:-}" ]]; then
@@ -114,9 +114,9 @@ fi
 
 # Si les autres extensions ne sont pas déjà définies, demander la sélection
 if [[ -z "${autres_extensions:-}" ]]; then
-    # Demander les extensions supplémentaires (comme LaTeX,socket et Chromium)
-    echo "Sélectionnez les extensions supplémentaires (latex,socket chromium) à installer (entrez les noms séparés par des virgules, ou appuyez sur 'Entrée' pour ignorer) :"
-    read -p "Autres extensions (par ex: latex,socket,chromium) : " autres_extensions
+    # Demander les extensions supplémentaires (comme LaTeX,socket,python et Chromium)
+    echo "Sélectionnez les extensions supplémentaires (latex,python chromium) à installer (entrez les noms séparés par des virgules, ou appuyez sur 'Entrée' pour ignorer) :"
+    read -p "Autres extensions (par ex: latex,python,chromium) : " autres_extensions
 fi
 
 # Créer le nom de l'image
