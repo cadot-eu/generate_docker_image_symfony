@@ -37,14 +37,17 @@ COPY --from=builder /usr/local/bin/install-php-extensions /usr/local/bin/
 # Copie des fichiers de configuration
 COPY ./BuildConfig /tmp/BuildConfig
 
-# Installation des dépendances minimales pour wkhtmltopdf
+# Installation des dépendances minimales pour wkhtmltopdf et ajout de tzdata
 RUN apk add --no-cache \
     libstdc++ \
     libx11 \
     libxrender \
     libxext \
     fontconfig \
-    freetype
+    freetype \
+    tzdata && \
+    ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
+    echo "Europe/Paris" > /etc/timezone
 
 # Copie des binaires wkhtmltopdf depuis l'image surnet
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
