@@ -28,8 +28,13 @@ if [ ! -d var ]; then
     mkdir var/log
 fi
 
-chmod -R 775 var
+# Création des sous-répertoires nécessaires s'ils n'existent pas
+mkdir -p var/cache var/log var/sessions
+
+# Attribution des permissions sécurisées à www-data
+log_warn "Attribution des permissions à www-data sur var..."
 chown -R www-data:www-data var
+chmod -R 755 var
 
 
 # Installation des dépendances si nécessaire
@@ -93,7 +98,6 @@ fi
 #permission www-data sur public
 log_warn "Permission www-data sur public..."
 chown -R www-data:www-data public
-chmod 777 var -R
 
 
 
