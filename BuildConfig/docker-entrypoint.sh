@@ -105,6 +105,17 @@ mkdir -p "var/cache/$MODE/sessions"
 chown -R www-data:www-data "var/cache/$MODE"
 chmod -R 755 "var/cache/$MODE"
 
+# Correction finale des permissions sur var/log pour éviter les erreurs de log
+log_warn "Correction finale des permissions sur var/log..."
+mkdir -p var/log
+chown -R www-data:www-data var/log
+chmod -R 755 var/log
+
+# Vérification et correction globale des permissions var
+log_warn "Vérification finale des permissions sur var..."
+chown -R www-data:www-data var
+chmod -R 755 var
+
 
 
 
