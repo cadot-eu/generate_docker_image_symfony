@@ -34,7 +34,7 @@ mkdir -p var/cache var/log var/sessions
 # Attribution des permissions sécurisées à www-data
 log_warn "Attribution des permissions à www-data sur var..."
 chown -R www-data:www-data var
-chmod -R 755 var
+chmod -R 777 var
 
 
 # Installation des dépendances si nécessaire
