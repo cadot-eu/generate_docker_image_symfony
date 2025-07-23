@@ -76,12 +76,6 @@ else
     }
 fi
 
-# Création des répertoires de sessions spécifiques au mode
-log_warn "Création des répertoires de sessions pour le mode $MODE..."
-mkdir -p "var/cache/$MODE/sessions"
-chown -R www-data:www-data "var/cache/$MODE"
-chmod -R 755 "var/cache/$MODE"
-
 
 # Compilation des assets si la commande existe
 
@@ -104,6 +98,12 @@ fi
 #permission www-data sur public
 log_warn "Permission www-data sur public..."
 chown -R www-data:www-data public
+
+# Création finale des répertoires de sessions spécifiques au mode
+log_warn "Création finale des répertoires de sessions pour le mode $MODE..."
+mkdir -p "var/cache/$MODE/sessions"
+chown -R www-data:www-data "var/cache/$MODE"
+chmod -R 755 "var/cache/$MODE"
 
 
 
