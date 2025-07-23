@@ -34,7 +34,7 @@ mkdir -p var/cache var/log var/sessions
 # Attribution des permissions sécurisées à www-data
 log_warn "Attribution des permissions à www-data sur var..."
 chown -R www-data:www-data var
-chmod -R 777 var
+chmod -R 755 var
 
 
 # Installation des dépendances si nécessaire
@@ -75,6 +75,12 @@ else
         log_error "Erreur durant la mise en cache"
     }
 fi
+
+# Création des répertoires de sessions spécifiques au mode
+log_warn "Création des répertoires de sessions pour le mode $MODE..."
+mkdir -p "var/cache/$MODE/sessions"
+chown -R www-data:www-data "var/cache/$MODE"
+chmod -R 755 "var/cache/$MODE"
 
 
 # Compilation des assets si la commande existe
