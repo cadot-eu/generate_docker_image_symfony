@@ -169,6 +169,45 @@ Lors de l'exécution du script `build.sh`, vous pouvez choisir d'installer diff�
 
 Vous pouvez combiner autant d'extensions que nécessaire pour adapter l'image à votre projet Symfony.
 
+## Outils utilitaires intégrés (ex : dlogs, debs)
+
+L'image peut intégrer des scripts utilitaires issus du projet [debs](https://github.com/cadot-eu/debs) pour faciliter la gestion, le debug et l'exploitation de vos conteneurs Symfony.
+
+### Exemples d'outils disponibles :
+
+- **dlogs** : affichage en temps réel des logs de tous les services supervisés (nginx, php-fpm, messenger, vos scripts custom, etc.)
+- **dps** : liste les process supervisés en cours d'exécution
+- **dexec** : exécute une commande dans le contexte du conteneur
+- **dstatus** : affiche l'état de tous les services supervisés
+- **dstop/dstart** : arrêt/redémarrage de services supervisés
+
+### Utilisation de dlogs
+
+Pour suivre tous les logs en temps réel dans votre conteneur :
+
+```bash
+dlogs
+```
+
+Vous pouvez aussi cibler un service précis :
+
+```bash
+dlogs nginx
+```
+
+### Installation et activation
+
+- Certains de ces scripts sont déjà présents dans l'image si vous avez intégré debs ou copié les scripts dans `/usr/local/bin/`.
+- Pour ajouter d'autres outils du projet debs, copiez-les dans l'image Docker ou ajoutez-les dans votre Dockerfile.
+
+### Avantages
+
+- **Debug facilité** : accès rapide à tous les logs et états de services
+- **Gestion centralisée** : manipulation des process supervisés sans quitter le conteneur
+- **Gain de temps** : pas besoin de connaître tous les chemins de logs ou de manipuler supervisord manuellement
+
+Pour plus d'outils et d'exemples, consultez la documentation officielle de [debs](https://github.com/cadot-eu/debs).
+
 ---
 
 Pour toute question ou suggestion, ouvrez une issue ou contactez le mainteneur du projet.
